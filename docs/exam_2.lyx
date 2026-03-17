@@ -1,0 +1,436 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 0.5in
+\topmargin 0.5in
+\rightmargin 0.5in
+\bottommargin 0.5in
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+EML 6934: Exam 2
+\end_layout
+
+\begin_layout Section*
+Factsheet (Personal Reference)
+\end_layout
+
+\begin_layout Standard
+Bayes rules
+\begin_inset Formula 
+\[
+p\left(x,y\right)=p\left(x|y\right)p\left(y\right)=p\left(y|x\right)p\left(x\right)
+\]
+
+\end_inset
+
+Law of total probability
+\begin_inset Formula 
+\begin{align*}
+p\left(x\right) & =\intop p\left(x,y\right)dy\\
+p\left(x\right) & =\sum_{y}p\left(x,y\right)
+\end{align*}
+
+\end_inset
+
+Law of total probability with conditioning
+\begin_inset Formula 
+\[
+p\left(x|z\right)=\sum_{y}p\left(y|z\right)p\left(x|y,z\right)
+\]
+
+\end_inset
+
+Corollary of Bayes + law of total probability:
+\begin_inset Formula 
+\begin{align*}
+p\left(x\right) & =\intop p\left(x|y\right)p\left(y\right)dy\\
+p\left(x\right) & =\sum_{y}p\left(x|y\right)p\left(y\right)
+\end{align*}
+
+\end_inset
+
+Independence
+\begin_inset Formula 
+\[
+p\left(x,y\right)=p\left(x\right)p\left(y\right)\iff p\left(x|y\right)=p\left(x\right)
+\]
+
+\end_inset
+
+Normalization
+\begin_inset Formula 
+\begin{align*}
+p\left(x|y\right) & =\underbrace{\frac{1}{\sum_{y}p\left(x,y\right)}p\left(y|x\right)}_{\eta}p\left(x\right)\\
+ & =\underbrace{\frac{1}{\sum_{y}p\left(y|x\right)p\left(x\right)}p\left(y|x\right)}_{\eta}p\left(x\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Problem 1
+\end_layout
+
+\begin_layout Standard
+We are given that
+\begin_inset Formula 
+\begin{align*}
+P\text{\left(x_{t+1}=clean|x_{t}=dirty,u_{t}=clean\right)} & =0.6\\
+P\text{\left(x_{t+1}=dirty|x_{t}=clean,u_{t}=clean\right)} & =0\\
+P\left(z_{t}=clean|x_{t}=dirty\right) & =0.2\\
+P\left(z_{t}=clean|x_{t}=clean\right) & =0.6\\
+z_{t+1} & =clean
+\end{align*}
+
+\end_inset
+
+The robot:
+\end_layout
+
+\begin_layout Enumerate
+Lands on a new tile
+\end_layout
+
+\begin_layout Enumerate
+Cleans it (without sensing) at 
+\begin_inset Formula $t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Then senses if it is clean or not at 
+\begin_inset Formula $t+1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We assume no prior knowledge of the floor tile we're over:
+\begin_inset Formula 
+\[
+P\left(x_{t}=clean\right)=c\in\left[0,1\right]
+\]
+
+\end_inset
+
+We want a plot of:
+\begin_inset Formula 
+\[
+P\left(x_{t+1}=clean|z_{t+1}=clean\right).
+\]
+
+\end_inset
+
+Use the Bayes filter (Table 2.1 from Sebastian Thrun's book).
+ Step 0: initialize the belief
+\begin_inset Formula 
+\[
+bel\left(x_{t}=clean\right)=c
+\]
+
+\end_inset
+
+Step 1: compute the time update (prediction a.k.a posterior belief before
+ the measurement).
+ 
+\begin_inset Formula 
+\begin{align*}
+\overline{bel}\left(x_{t+1}=clean\right) & =\intop p\left(x_{t+1}=clean|u_{t+1}=clean,x_{t}=unknown\right)bel\left(x_{t}\right)dx_{t}\\
+\\
+ & =p\left(x_{t+1}=clean|u_{t+1}=clean,x_{t}=clean\right)p\left(x_{t}=clean\right)\\
+ & +p\left(x_{t+1}=clean|u_{t+1}=clean,x_{t}=dirty\right)p\left(x_{t}=dirty\right)\\
+\\
+ & =p\left(x_{t+1}=clean|u_{t+1}=clean,x_{t}=clean\right)p\left(x_{t}=clean\right)\\
+ & +p\left(x_{t+1}=clean|u_{t+1}=clean,x_{t}=dirty\right)p\left(x_{t}=dirty\right)\\
+\\
+ & =1\cdot c+0.6\cdot(1-c)\\
+ & =0.4c+0.6
+\end{align*}
+
+\end_inset
+
+Step 2: compute the measurement update (posterior belief after the measurement).
+ Use the law of total probability and Bayes rule.
+\begin_inset Formula 
+\begin{align*}
+bel\left(x_{t+1}=clean\right) & =\underbrace{\frac{1}{p\left(z_{t+1}=clean\right)}}_{\eta}p\left(z_{t+1}=clean|x_{t+1}=clean\right)\overline{bel}\left(x_{t+1}=clean\right)\\
+ & =\frac{1}{\sum_{x}p\left(z_{t+1}=clean,x_{t+1}\right)}p\left(z_{t+1}=clean|x_{t+1}=clean\right)\overline{bel}\left(x_{t+1}=clean\right)\\
+ & =\frac{1}{\sum_{x}p\left(z_{t+1}=clean|x_{t+1}\right)p\left(x_{t+1}\right)}p\left(z_{t+1}=clean|x_{t+1}=clean\right)\overline{bel}\left(x_{t+1}=clean\right)\\
+ & =\frac{p\left(z_{t+1}=clean|x_{t+1}=clean\right)\overline{bel}\left(x_{t+1}=clean\right)}{p\left(z_{t+1}=clean|x_{t+1}=clean\right)p\left(x_{t+1}=clean\right)+p\left(z_{t+1}=clean|x_{t+1}=dirty\right)p\left(x_{t+1}=dirty\right)}\\
+ & =\frac{p\left(z_{t+1}=clean|x_{t+1}=clean\right)\overline{bel}\left(x_{t+1}=clean\right)}{p\left(z_{t+1}=clean|x_{t+1}=clean\right)p\left(x_{t+1}=clean\right)+p\left(z_{t+1}=clean|x_{t+1}=dirty\right)\left(1-p\left(x_{t+1}=clean\right)\right)}\\
+ & =\frac{p\left(z_{t+1}=clean|x_{t+1}=clean\right)\overline{bel}\left(x_{t+1}=clean\right)}{p\left(z_{t+1}=clean|x_{t+1}=clean\right)\overline{bel}\left(x_{t+1}=clean\right)+p\left(z_{t+1}=clean|x_{t+1}=dirty\right)\left(1-\overline{bel}\left(x_{t+1}=clean\right)\right)}\\
+ & =\frac{0.6\cdot\left(0.4c+0.6\right)}{0.6\cdot\left(0.4c+0.6\right)+0.2\left(1-\left(0.4c+0.6\right)\right)}\\
+ & =\frac{0.24c+0.36}{0.24c+0.36+0.2-0.2\left(0.4c+0.6\right)}\\
+ & =\frac{0.24c+0.36}{0.24c+0.36+0.2-0.08c-0.12}\\
+ & =\frac{0.24c+0.36}{0.16c+0.44}
+\end{align*}
+
+\end_inset
+
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:posterior-belief"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ shows the above function.
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename q1_plot.pdf
+	lyxscale 80
+	scale 80
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:posterior-belief"
+
+\end_inset
+
+Posterior belief after applying Bayer's filter to the robot vacuum in the
+ described case.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Problem 2
+\end_layout
+
+\begin_layout Standard
+Consider the time-invariant, discrete-time, nonlinear state space system.
+\begin_inset Formula 
+\begin{align*}
+\dot{s} & =f\left(s_{k},u_{k}\right),\\
+f\left(s,u\right) & \triangleq\left[\begin{array}{c}
+s_{1}+u_{2}\cos\left(s_{3}+u_{1}\right)\\
+s_{2}+u_{2}\sin\left(s_{3}+u_{1}\right)\\
+s_{3}+u_{1}+u_{3}
+\end{array}\right]
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula $u\triangleq\left[\begin{array}{ccc}
+u_{1}^{\top} & u_{2}^{\top} & u_{3}^{\top}\end{array}\right]^{\top}=\left[\begin{array}{ccc}
+\delta_{\text{rot}1}^{\top} & \delta_{\text{trans}}^{\top} & \delta_{\text{rot}2}^{\top}\end{array}\right]^{\top}\in\mathbb{R}^{3}$
+\end_inset
+
+ and 
+\begin_inset Formula $s\triangleq\left[\begin{array}{ccc}
+x^{\top} & y^{\top} & \theta^{\top}\end{array}\right]^{\top}\in\mathbb{R}^{3}$
+\end_inset
+
+.
+ Let the corresponding measurement model be
+\begin_inset Formula 
+\[
+h\left(s\right)\triangleq\arctan\left(\frac{\ell_{y}-s_{2}}{\ell_{x}-s_{1}}\right)-s_{3}
+\]
+
+\end_inset
+
+Take the Jacobians.
+\begin_inset Formula 
+\begin{align*}
+\frac{df}{du} & =\left[\begin{array}{ccc}
+\frac{df_{1}}{du_{1}} & \frac{df_{1}}{du_{2}} & \frac{df_{1}}{du_{3}}\\
+\frac{df_{2}}{du_{1}} & \frac{df_{2}}{du_{2}} & \frac{df_{2}}{du_{3}}\\
+\frac{df_{3}}{du_{1}} & \frac{df_{3}}{du_{2}} & \frac{df_{3}}{du_{3}}
+\end{array}\right]\\
+ & =\left[\begin{array}{ccc}
+-u_{2}\sin\left(s_{3}+u_{1}\right) & \cos\left(s_{3}+u_{1}\right) & 0\\
+u_{2}\cos\left(s_{3}+u_{1}\right) & \sin\left(s_{3}+u_{1}\right) & 0\\
+1 & 0 & 1
+\end{array}\right]
+\end{align*}
+
+\end_inset
+
+and 
+\begin_inset Formula 
+\begin{align*}
+\frac{df}{ds} & =\left[\begin{array}{ccc}
+\frac{df_{1}}{ds_{1}} & \frac{df_{1}}{ds_{2}} & \frac{df_{1}}{ds_{3}}\\
+\frac{df_{2}}{ds_{1}} & \frac{df_{2}}{ds_{2}} & \frac{df_{2}}{ds_{3}}\\
+\frac{df_{3}}{ds_{1}} & \frac{df_{3}}{ds_{2}} & \frac{df_{3}}{ds_{3}}
+\end{array}\right]\\
+ & =\left[\begin{array}{ccc}
+1 & 0 & -u_{2}\sin\left(s_{3}+u_{1}\right)\\
+0 & 1 & u_{2}\cos\left(s_{3}+u_{1}\right)\\
+0 & 0 & 1
+\end{array}\right]
+\end{align*}
+
+\end_inset
+
+and
+\begin_inset Formula 
+\begin{align*}
+\frac{dh}{ds} & =\left[\begin{array}{c}
+\frac{dh_{1}}{ds_{1}}\\
+\frac{dh_{1}}{ds_{2}}\\
+\frac{dh_{1}}{ds_{3}}
+\end{array}\right]\\
+ & =\left[\begin{array}{c}
+\frac{1}{1+\left(\frac{\ell_{y}-s_{2}}{\ell_{x}-s_{1}}\right)^{2}}\cdot\left(\ell_{y}-s_{2}\right)\left(\ell_{x}-s_{1}\right)^{-2}\\
+\frac{1}{1+\left(\frac{\ell_{y}-s_{2}}{\ell_{x}-s_{1}}\right)^{2}}\cdot-\left(\ell_{x}-s_{1}\right)^{-1}\\
+-1
+\end{array}\right]\\
+ & =\left[\begin{array}{c}
+\frac{\ell_{y}-s_{2}}{\left(\ell_{x}-s_{1}\right)^{2}+\left(\ell_{y}-s_{2}\right)^{2}}\\
+\frac{s_{1}-\ell_{x}}{\left(\ell_{x}-s_{1}\right)^{2}+\left(\ell_{y}-s_{2}\right)^{2}}\\
+-1
+\end{array}\right]
+\end{align*}
+
+\end_inset
+
+Thus, at a given operating point 
+\begin_inset Formula $\left(s,u\right)\in\mathbb{R}^{3}\times\mathbb{R}^{3}$
+\end_inset
+
+, we have the linear system
+\begin_inset Formula 
+\begin{align*}
+s_{k} & =\left(\frac{df}{ds}\right)_{k}\Delta s_{k}+\left(\frac{df}{du}\right)_{k}\Delta u_{k}+\varepsilon\\
+y_{k} & =\left(\frac{dh}{ds}\right)_{k}s_{k}+\delta
+\end{align*}
+
+\end_inset
+
+where 
+\begin_inset Formula $\varepsilon$
+\end_inset
+
+ and 
+\begin_inset Formula $\delta$
+\end_inset
+
+ are zero-mean Gaussian disturbances and noise, respectively, each with
+ known covariances.
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Technically, the KF can still work if the means are non-zero but known.
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_body
+\end_document
