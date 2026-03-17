@@ -1,16 +1,21 @@
+from typing import Callable, cast
+
 import jax
 import jax.numpy as jnp
 import equinox as eqx
-from typing import Callable
 from jaxtyping import Array, Float
 import diffrax
 
 class EKF(eqx.Module):
-    f_sys: Callable  # Continuous-time dynamical model
-    h_sys: Callable  # Continuous-time measurement model
+    f_sys: Callable  # Dynamical model
+    h_sys: Callable  # Measurement model
     Q: Float[Array, "nz nz"]  # Measurement noise (PD symmetric)
     R: Float[Array, "nx nx"]  # Process noise (PD symmetric)
-    
+
+    # evaluate at compile-time, not runtime
+    already_discrete: bool = eqx.field(static=True)
+
+    @eqx.filter_jit
     def propagate(
         self,
         mu_prev: Float[Array, "nx"], 
@@ -19,34 +24,45 @@ class EKF(eqx.Module):
         z: Float[Array, "nz"], # measurement
         dt: float
     ) -> tuple[Float[Array, "nx"], Float[Array, "nx nx"]]:
+
         # predict: propagate mean
-        def vector_field(t, x, args): return self.f_sys(x, u)
-        ode_term = diffrax.ODETerm(vector_field)
-        solver = diffrax.Dopri5() # Runge-Kutta 4/5
-        sol = diffrax.diffeqsolve(
-            ode_term,
-            solver, 
-            t0=0.0, 
-            t1=dt,
-            dt0=dt, 
-            y0=mu_prev
-        )
-        if sol.result != diffrax.RESULTS.successful:
-            raise RuntimeError(f"SIMULATION FAILED: Diffrax Error {sol.result}")
-        mu_overbar_now = sol.ys[-1] # Can the "None" typecast be fixed here? It's still appearing.s
-        
+        if not self.already_discrete:
+            def vector_field(t: float, x: Array, args) -> Array:
+                return self.f_sys(x, u)
+
+            ode_term = diffrax.ODETerm(vector_field) # type: ignore
+            solver = diffrax.Dopri5() # Runge-Kutta 4/5
+            sol = diffrax.diffeqsolve(
+                ode_term,
+                solver, 
+                t0=0.0, 
+                t1=dt,
+                dt0=dt, 
+                y0=mu_prev
+            )
+            mu_overbar_now = cast(Array, sol.ys)[-1]
+        else:
+            mu_overbar_now = self.f_sys(mu_prev, u)
+
         # predict: propagate covariance
         df_dx = jax.jacfwd(self.f_sys)(mu_prev, u)
-        Sigma_overbar_now = self.R + df_dx @ Sigma_prev @ df_dx.T
-    
+        nx = mu_prev.shape[0]
+        if not self.already_discrete:
+            G = jnp.eye(nx) + df_dx * dt  # assume zero-order hold
+        else:
+            G = df_dx
+
+        Sigma_overbar_now = self.R + G @ Sigma_prev @ G.T
+
         # measurement update
-        dh_dx = jax.jacfwd(self.h_sys)(mu_overbar_now) # Note: not mu_prev
+        dh_dx = jax.jacfwd(self.h_sys)(mu_overbar_now) # note: not mu_prev
         temp_prod = Sigma_overbar_now @ dh_dx.T
         K_kalman = temp_prod @ jnp.linalg.inv(dh_dx @ temp_prod + self.Q)
         mu_now = mu_overbar_now + K_kalman @ (z - self.h_sys(mu_overbar_now))
-        nx = Sigma_overbar_now.shape[0]
-        Sigma_now = (jnp.eye(nx) - K_kalman @ dh_dx) @ Sigma_overbar_now
+        I_KH = jnp.eye(nx) - K_kalman @ dh_dx  # Joseph form for numeric stability, suggested by Gemini 
+        Sigma_now = I_KH @ Sigma_overbar_now @ I_KH.T + K_kalman @ self.Q @ K_kalman.T
         return mu_now, Sigma_now
+
 
 def f(x_prev: Float[Array, "nx"], u: Float[Array, "nu"] ) -> Float[Array, "nx"]:
     x_1 = x_prev[0]
@@ -55,13 +71,14 @@ def f(x_prev: Float[Array, "nx"], u: Float[Array, "nu"] ) -> Float[Array, "nx"]:
     u_1 = u[0]
     u_2 = u[1]
     u_3 = u[2]
-    x_dot = jnp.array([
+    x_now = jnp.array([
         x_1 + u_2 * jnp.cos(x_3 + u_1), 
         x_2 + u_2 * jnp.sin(x_3 + u_1),
         x_3 + u_3 + u_1
     ], dtype=jnp.float32
     )
-    return x_dot.T
+    return x_now
+
 
 def h(x_prev: Float[Array, "nx"]) -> Float[Array, "nz"]:
     L_x = 0
@@ -69,14 +86,9 @@ def h(x_prev: Float[Array, "nx"]) -> Float[Array, "nz"]:
     x_1 = x_prev[0]
     x_2 = x_prev[1]
     x_3 = x_prev[2]
-    numerator = L_y - x_2
-    denominator = L_x - x_1
-    # if denominator == 0:
-    #     ans = jnp.array([jnp.pi / 2], dtype=jnp.float32)
-    #     return -ans * jnp.sign(numerator) - x_3 # WTF why negative? How will jnp.sign affect diffrax, also?
-    
-    h_x = jnp.arctan(numerator / denominator) - x_3
+    h_x = jnp.arctan2(L_y - x_2, L_x - x_1) - x_3
     return jnp.array([h_x], dtype=jnp.float32) # rad
+
 
 def main() -> None:
     q = 0.01
@@ -92,12 +104,12 @@ def main() -> None:
     Q = q * jnp.eye(nz, dtype=jnp.float32)
     R = r * jnp.eye(nx, dtype=jnp.float32)
     
-     # assume perfect information initially
+    # assume perfect information initially
     Sigma_0 = jnp.zeros_like(R, dtype=jnp.float32)
     mu_0 = x_0
 
     # call filter
-    my_ekf = EKF(f_sys=f, h_sys=h, Q=Q, R=R)
+    my_ekf = EKF(f_sys=f, h_sys=h, Q=Q, R=R, already_discrete=True)
     mu, Sigma = my_ekf.propagate(
         mu_prev=mu_0,
         Sigma_prev=Sigma_0,
