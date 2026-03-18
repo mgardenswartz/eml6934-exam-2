@@ -268,7 +268,7 @@ status open
 \begin_inset Graphics
 	filename q1_plot.pdf
 	lyxscale 80
-	scale 80
+	scale 50
 
 \end_inset
 
@@ -308,7 +308,8 @@ Problem 1.2
 \end_layout
 
 \begin_layout Standard
-Consider the time-invariant, discrete-time, nonlinear state space system.
+Consider the time-invariant, discrete-time, nonlinear state space system
+ (from Thrun, Problem 5.40)
 \begin_inset Formula 
 \begin{align*}
 \dot{s} & =f\left(s_{k},u_{k}\right),\\
@@ -437,8 +438,8 @@ Problem 2.1
 \end_layout
 
 \begin_layout Standard
-The psuedo-code for the EKF algorithm is given in Sebastian Thrun's Probablistic
- Robots book, Table 2.1
+The pseudo-code for the EKF algorithm is given in Sebastian Thrun's Probabilisti
+c Robots book, Table 2.1
 \begin_inset Float figure
 wide false
 sideways false
@@ -449,7 +450,7 @@ status open
 \begin_inset Graphics
 	filename ekf.png
 	lyxscale 50
-	scale 50
+	scale 25
 
 \end_inset
 
@@ -470,7 +471,7 @@ EKF Algorithm
 
 \end_inset
 
- as where the variables above are defined as follows:
+ where the variables above are defined as follows:
 \end_layout
 
 \begin_layout Itemize
@@ -644,7 +645,159 @@ Problem 2.2
 \end_layout
 
 \begin_layout Standard
+The pseudo-code for the particle filter algorithm is given in Sebastian
+ Thrun's Probabilistic Robots book, Table 4.3
+\begin_inset Float figure
+wide false
+sideways false
+status open
 
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename pf.png
+	lyxscale 50
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+EKF Algorithm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+where the variables above are defined as follows:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $x_{t}\in\mathbb{R}^{n}$
+\end_inset
+
+ is the state at time 
+\begin_inset Formula $t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $u_{t}\in\mathbb{R}^{m}$
+\end_inset
+
+ is the control input at time 
+\begin_inset Formula $t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $z_{t}\in\mathbb{R}^{p}$
+\end_inset
+
+ is the measurement at time 
+\begin_inset Formula $t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $M\in\mathbb{Z}_{\ge1}$
+\end_inset
+
+ is the total number of particles used in the filter
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\mathcal{X}_{t-1}$
+\end_inset
+
+ is the prior set of 
+\begin_inset Formula $M\in\mathbb{Z}_{\ge1}$
+\end_inset
+
+ particles representing the belief distribution at time 
+\begin_inset Formula $t-1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $m$
+\end_inset
+
+ and 
+\begin_inset Formula $i$
+\end_inset
+
+ are integer indices used to iterate through the particles
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $x_{t}^{[m]}\in\mathbb{R}^{n}$
+\end_inset
+
+ is the specific state hypothesis of the 
+\begin_inset Formula $m^{\text{th}}$
+\end_inset
+
+ particle at time 
+\begin_inset Formula $t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $w_{t}^{[m]}\in\mathbb{R}_{\ge0}$
+\end_inset
+
+ is the importance weight of the 
+\begin_inset Formula $m^{\text{th}}$
+\end_inset
+
+ particle at time 
+\begin_inset Formula $t$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\overline{\mathcal{X}}_{t}$
+\end_inset
+
+ is the intermediate proposed set of particles and their corresponding weights
+ after the prediction step (but before the resampling/correction update)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\mathcal{X}_{t}$
+\end_inset
+
+ is the posterior set of 
+\begin_inset Formula $M$
+\end_inset
+
+ particles representing the updated belief distribution at time 
+\begin_inset Formula $t$
+\end_inset
+
+ (after the resampling step)
 \end_layout
 
 \end_body

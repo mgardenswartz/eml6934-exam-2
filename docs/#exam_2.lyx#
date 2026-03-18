@@ -470,7 +470,7 @@ EKF Algorithm
 
 \end_inset
 
- as where the variables above are defined as follows:
+ where the variables above are defined as follows:
 \end_layout
 
 \begin_layout Itemize
@@ -641,6 +641,43 @@ nt/correction update)
 
 \begin_layout Section*
 Problem 2.2
+\end_layout
+
+\begin_layout Standard
+The psuedo-code for the Pa algorithm is given in Sebastian Thrun's Probablistic
+ Robots book, Table 4.3
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename pf.png
+	lyxscale 50
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+EKF Algorithm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_body
