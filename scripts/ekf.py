@@ -2,6 +2,7 @@ from typing import Callable, cast
 
 import jax
 import jax.numpy as jnp
+import jax.scipy as jsp
 import equinox as eqx
 from jaxtyping import Array, Float
 import diffrax
@@ -48,7 +49,7 @@ class EKF(eqx.Module):
         df_dx = jax.jacfwd(self.f_sys)(mu_prev, u)
         nx = mu_prev.shape[0]
         if not self.already_discrete:
-            G = jnp.eye(nx) + df_dx * dt  # assume zero-order hold
+            G = jsp.linalg.expm(df_dx * dt) # could use zero-order hold but this is better if dt is big
         else:
             G = df_dx
 
