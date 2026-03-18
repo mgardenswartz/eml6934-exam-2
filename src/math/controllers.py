@@ -6,6 +6,7 @@ from jaxtyping import Array, Float
 import numpy as np
 import scipy.linalg as sla
 
+
 class OpenLoopRectanglePolicy(eqx.Module):
     dt: float
 

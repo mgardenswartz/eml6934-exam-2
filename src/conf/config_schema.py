@@ -3,7 +3,7 @@ import jax.numpy as jnp
 
 @dataclass
 class DirectoriesConfig:
-    output_parent_dir: str = "output"
+    output_parent_dir: str = "outputs"
     figures_dir: str = "figures"
     statistics_filename: str = "statistics.json"
 
@@ -13,6 +13,7 @@ class SimulationConfig:
     num_steps: int = 200
     x0: list[float] = field(default_factory=lambda: [180.0, 50.0, 0.0])
     random_seed: int = 42
+    num_particles: int = 100
 
 @dataclass
 class NoiseConfig:
