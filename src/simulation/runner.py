@@ -2,7 +2,7 @@ import jax
 import jax.numpy as jnp
 from src.conf.config_schema import ExperimentConfig
 from src.math.dynamics import f, h, wrap_angle
-from src.math.controllers import OpenLoopRectanglePolicy
+from scripts.controllers import OpenLoopRectanglePolicy
 from src.math.filters import EKF
 from src.math.filters import ParticleFilter
 
@@ -80,7 +80,7 @@ def run_simulation(config: ExperimentConfig) -> dict[str, jax.Array]:
         data = {
             "time": step_idx * dt, 
             "states": x_real, 
-            "estimates": mu
+            "estimates": mu_next
         }
         return (x_next, mu_next, Sigma_next, rng), data
 

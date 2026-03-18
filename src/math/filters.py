@@ -45,12 +45,10 @@ class EKF(eqx.Module):
 
         Sigma_overbar_now = R + G @ Sigma_prev @ G.T
 
-        # ADDED: Pass *h_args to h_sys and its Jacobian
         dh_dx = jax.jacfwd(self.h_sys)(mu_overbar_now, *h_args) 
         temp_prod = Sigma_overbar_now @ dh_dx.T
         K_kalman = temp_prod @ jnp.linalg.inv(dh_dx @ temp_prod + Q)
         
-        # ADDED: Use residual_fn if provided, otherwise standard subtraction
         z_expected = self.h_sys(mu_overbar_now, *h_args)
         if residual_fn is not None:
             innovation = residual_fn(z, z_expected)
@@ -84,19 +82,15 @@ class ParticleFilter(eqx.Module):
         
         key_motion, key_resample = jax.random.split(key)
 
-        # 1. PREDICT (Sample Motion Model)
-        # Sample unique control noise for every individual particle
+        # predict
         u_noise = jax.random.multivariate_normal(
             key_motion, jnp.zeros_like(u), M, shape=(self.num_particles,)
         )
         u_particles = u + u_noise
-
-        # Vectorize the motion model across all particles and their unique noisy controls
         vmap_f = jax.vmap(self.f_sys, in_axes=(0, 0))
         particles_bar = vmap_f(particles, u_particles)
 
-        # 2. UPDATE (Calculate Importance Weights)
-        # Vectorize the measurement model
+        # update
         vmap_h = jax.vmap(self.h_sys, in_axes=(0, *[None]*len(h_args)))
         z_expected = vmap_h(particles_bar, *h_args)
 
@@ -106,22 +100,17 @@ class ParticleFilter(eqx.Module):
         else:
             innov = z - z_expected
 
-        # Evaluate Gaussian PDF for weights: exp(-0.5 * (innov^2 / Q))
         innov = innov.reshape(-1)
         weights = jnp.exp(-0.5 * (innov**2) / Q_val)
         weights = weights + 1e-8 # Prevent division by zero
         weights = weights / jnp.sum(weights)
 
-        # 3. LOW-VARIANCE RESAMPLING
         r = jax.random.uniform(key_resample, minval=0.0, maxval=1.0 / self.num_particles)
         c = jnp.cumsum(weights)
         U = r + jnp.arange(self.num_particles) * (1.0 / self.num_particles)
-        
-        # searchsorted instantly finds the indices without a while loop
+
         indices = jnp.searchsorted(c, U) 
         particles_resampled = particles_bar[indices]
-
-        # 4. STATE ESTIMATE EXTRACTION
         mean_pos = jnp.mean(particles_resampled[:, :2], axis=0)
         
         # Circular mean for the heading angle

@@ -22,7 +22,6 @@ class NoiseConfig:
 
 @dataclass
 class EnvironmentConfig:
-    # 6 markers as defined in the MATLAB template
     marker_pos: list[list[float]] = field(default_factory=lambda: [
         [21.0, 0.0],
         [242.0, 0.0],
