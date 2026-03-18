@@ -4,8 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jax-lqg-simulation"
-version = "0.1.0"
-description = "A hardware-accelerated Linear Quadratic Gaussian (LQG) control simulation built in JAX. Features a discrete/continuous Extended Kalman Filter (EKF), an infinite-horizon Linear Quadratic Regulator (LQR), and automated hyperparameter tuning via Optuna."
+version = "1.0.0"
+description = "EML 6934"
+authors = [
+    { name = "Max Gardenswartz", email = "mgardenswartz@ufl.edu" }
+]
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

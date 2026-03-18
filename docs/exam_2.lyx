@@ -421,25 +421,24 @@ where
 
  are zero-mean Gaussian disturbances and noise, respectively, each with
  known covariances.
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-Technically, the KF can still work if the means are non-zero but known.
-\end_layout
-
-\end_inset
-
- 
 \end_layout
 
 \begin_layout Section*
-Problem 2.1
+Problem 2.1a
 \end_layout
 
 \begin_layout Standard
-The pseudo-code for the EKF algorithm is given in Sebastian Thrun's Probabilisti
-c Robots book, Table 2.1
+The pseudo-code for the EKF algorithm is given in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:EKF-Algorithm"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ (Sebastian Thrun's Probabilistic Robots book, Table 2.1)
 \begin_inset Float figure
 wide false
 sideways false
@@ -461,6 +460,12 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:EKF-Algorithm"
+
+\end_inset
+
 EKF Algorithm
 \end_layout
 
@@ -641,12 +646,21 @@ nt/correction update)
 \end_layout
 
 \begin_layout Section*
-Problem 2.2
+Problem 2.2a
 \end_layout
 
 \begin_layout Standard
-The pseudo-code for the particle filter algorithm is given in Sebastian
- Thrun's Probabilistic Robots book, Table 4.3
+The pseudo-code for the particle filter algorithm is given in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:PF-Algorithm"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ (Sebastian Thrun's Probabilistic Robots book, Table 4.3) 
 \begin_inset Float figure
 wide false
 sideways false
@@ -668,7 +682,13 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-EKF Algorithm
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:PF-Algorithm"
+
+\end_inset
+
+PF Algorithm
 \end_layout
 
 \end_inset
@@ -798,6 +818,142 @@ where the variables above are defined as follows:
 \end_inset
 
  (after the resampling step)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Separator plain
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Problem 2.1b
+\end_layout
+
+\begin_layout Standard
+The results for the EKF are given in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:EKF-results"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename ekf_path.pdf
+	lyxscale 50
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:EKF-results"
+
+\end_inset
+
+EKF Algorithm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Problem 2.2b
+\end_layout
+
+\begin_layout Standard
+The results for the PF are given in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:PF-results"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename pf_path.pdf
+	lyxscale 50
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:PF-results"
+
+\end_inset
+
+PF Algorithm
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Source Code
+\end_layout
+
+\begin_layout Standard
+I do not own MATLAB (and since UF provides no license), I cannot use the
+ starter code, but the codebase used to generate these plots is public and
+ available at: 
+\begin_inset CommandInset href
+LatexCommand href
+target "https://github.com/mgardenswartz/eml6934-exam-2"
+
+\end_inset
+
+.
 \end_layout
 
 \end_body
